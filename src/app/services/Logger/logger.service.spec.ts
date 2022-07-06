@@ -10,7 +10,7 @@ describe('LoggerService', () => {
       providers: [LoggerService],
     });
 
-    service = TestBed.inject(LoggerService); //herhangi bir dependencia yok ise inject kullanabiliriz. herhangi bir dependencia varsa mock service yapmalıyız (jasmine.createSpyObj(['metodIsmi']))
+    service = TestBed.inject(LoggerService); //herhangi bir dependencia yok ise direkt olarak inject kullanabiliriz. herhangi bir dependencia varsa mock service yapmalıyız (jasmine.createSpyObj(['metodIsmi']))
   });
 
   it('should not have any messages at starting', () => {
