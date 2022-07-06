@@ -4,17 +4,18 @@ import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { Post } from 'src/app/models/Post';
 import { PostService } from 'src/app/services/Post/post.service';
+import { PostComponent } from '../post/post.component';
 import { PostsComponent } from './posts.component';
 
-//making a fake component for child component   (bu hata çıkmasın diye: NG0304: 'app-post' is not a known element:)
-@Component({
-  selector: 'app-post',
-  template: '<div></div>',
-})
-class FakePostComponent {
-  //Child componentin burada tanınması için bir fake component oluşturduk ve içerisine fake input ataması yaptık
-  @Input() post!: Post;
-}
+//making a fake component for child component   (bu hata çıkmasın diye: NG0303: Can't bind to 'routerLink' since it isn't a known property of 'a'.)
+// @Component({
+//   selector: 'app-post',
+//   template: '<div></div>',
+// })
+// class FakePostComponent {
+//   //Child componentin burada tanınması için bir fake component oluşturduk ve içerisine fake input ataması yaptık
+//   @Input() post!: Post;
+// }
 
 describe('Posts Component', () => {
   let POSTS: Post[];
@@ -39,12 +40,17 @@ describe('Posts Component', () => {
         body: 'body 3',
         title: 'title 3',
       },
+      {
+        id: 4,
+        body: 'body 4',
+        title: 'title 4',
+      },
     ];
 
     mockPostService = jasmine.createSpyObj(['getPosts', 'deletePost']); //service'deki methodları aldık ve componentte kullandık.
 
     TestBed.configureTestingModule({
-      declarations: [PostsComponent, FakePostComponent],
+      declarations: [PostsComponent, PostComponent],
       providers: [
         {
           provide: PostService,
@@ -54,8 +60,10 @@ describe('Posts Component', () => {
     });
 
     // component = TestBed.inject(PostsComponent); //inject will create an instance for this one as a service
-    fixture = TestBed.createComponent(PostsComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(PostsComponent); //fixture'u PostsComponentin bu test componentindeki yansıması haline getirdik.
+
+    component = fixture.componentInstance; //Yukarıdaki yansımanın içindeki tüm temel öğeleri taşıdık.
+    // console.log(component);
 
     // ***********************************Before Testbed and inject method***********************************
     //     //component = new PostsComponent();   //Error because PostsComponent has dependencia with PostService we should create mock Service
@@ -64,23 +72,57 @@ describe('Posts Component', () => {
     // ***********************************Before Testbed and inject method***********************************
   });
 
-  it('should set posts from the service directly', () => {
-    mockPostService.getPosts.and.returnValue(of(POSTS)); //bu test case getPost metodunu çağırdığında POSTS observable dönecek
-    fixture.detectChanges();
+  it('should create exact same number of Post Component with Posts', () => {
+    mockPostService.getPosts.and.returnValue(of(POSTS)); //bu test case getPost metodunu çağırdığında POSTS observable dönecek çünkü component içerisinde getPost metodunun subscriptionu var
 
-    expect(component.posts.length).toBe(3);
+    //ngOnInit her çalıştığında içerisindeki getPost çalışacağı için yukarıdaki kod parçasını yazdık, aşağıda ise çalıştığındaki olayları takip edicez.
+    fixture.detectChanges();
+    // console.log(fixture);
+
+    const postComponentDEs = fixture.debugElement.queryAll(
+      By.directive(PostComponent)
+    ); //posts.html içerisindeki <app-post>'u yakalamak için directive komutunu kullandık. Componentleri bulmak için directive kullanılır.
+
+    expect(postComponentDEs.length).toEqual(POSTS.length);
   });
 
-  it('should create one post child Element for each post', ()=>{
+  it('should check whether exact post is sending to PostComponent', () => {
+    mockPostService.getPosts.and.returnValue(of(POSTS)); //gelen veriyi observable olarak döndü.
+
+    fixture.detectChanges(); //değişiklikleri yakaladık ve bildirdik.
+
+    const postComponentDEs = fixture.debugElement.queryAll(
+      By.directive(PostComponent)
+    );
+
+    // console.log(postComponentDEs);
+    for (let i = 0; i < POSTS.length; i++) {
+      const postComponentInstance = postComponentDEs[i]
+        .componentInstance as PostComponent;
+
+      // console.log(postComponentInstance);
+
+      expect(postComponentInstance.post.title).toEqual(POSTS[i].title);
+    }
+  });
+
+  it('should set posts from the service directly', () => {
+    mockPostService.getPosts.and.returnValue(of(POSTS)); //bu test case getPost metodunu çağırdığında POSTS observable dönecek çünkü component içerisinde getPost metodunun subscriptionu var
+    fixture.detectChanges();
+
+    expect(component.posts.length).toBe(4);
+  });
+
+  it('should create one post child Element for each post', () => {
     mockPostService.getPosts.and.returnValue(of(POSTS)); //bu test case getPost metodunu çağırdığında POSTS observable dönecek
 
     fixture.detectChanges();
 
     const debugElement = fixture.debugElement;
-    const postElement = debugElement.queryAll(By.css('.posts'))
+    const postElement = debugElement.queryAll(By.css('.posts'));
 
-    expect(postElement.length).toBe(POSTS.length)
-  })
+    expect(postElement.length).toBe(POSTS.length);
+  });
 
   describe('delete', () => {
     beforeEach(() => {
@@ -90,7 +132,7 @@ describe('Posts Component', () => {
 
     it('should delete the selected Post from the posts', () => {
       component.delete(POSTS[1]);
-      expect(component.posts.length).toBe(2);
+      expect(component.posts.length).toBe(3);
     });
 
     it('should delete the actual selected Post in Posts', () => {
