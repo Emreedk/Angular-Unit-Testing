@@ -1,0 +1,4 @@
+  <p>Posts working</p>
+  <div *ngFor="let postparent of posts" class="posts">
+    <app-post [post]="postparent" (delete)="delete(postparent)"></app-post>
+  </div>
