@@ -36,22 +36,25 @@ describe('Post Service', () => {
         PostService,
         {
           provide: HttpClient,
-          useValue: httpClientSpyObj,
+          useValue: httpClientSpyObj,    //httpClient bu test case'de çağırıldığında httpClientSpyObj kullanılacak.
         },
       ],
     });
-    postService = TestBed.inject(PostService);
+    postService = TestBed.inject(PostService);  //testbed.inject ile PostService'den instance oluşturduk
     httpClientSpy = TestBed.inject(HttpClient) as jasmine.SpyObj<HttpClient>;
   });
 
   describe('getPosts()', () => {
-    it('should return expected posts when getPosts() is called', () => {
+    it('should return expected posts when getPosts() is called', (done : DoneFn) => {
       httpClientSpy.get.and.returnValue(of(POSTS));
       postService.getPosts().subscribe({
         next: (posts) => {
           expect(posts).toEqual(POSTS);
+          done();
         },
-        error: () => {},
+        error: () => {
+          done.fail
+        },
       });
       expect(httpClientSpy.get).toHaveBeenCalledTimes(1);
     });
