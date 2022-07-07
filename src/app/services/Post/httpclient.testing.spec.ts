@@ -28,7 +28,7 @@ describe('Http Client Testing Module', () => {
 
 
     httpClient.get<Data>(testUrl).subscribe( data =>{
-      console.log(data)
+      // console.log(data)
       expect(data).toEqual(testData)
     });   //httpClient.get metodunu çağırdık içine testUrl'i verdik
 
