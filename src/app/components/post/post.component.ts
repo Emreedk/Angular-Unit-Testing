@@ -15,7 +15,7 @@ export class PostComponent implements OnInit {
   ngOnInit(): void {
   }
   onDeletePost(event:Event){
-    event.stopPropagation();
+    event.preventDefault();
     this.delete.emit(this.post);
   }
 

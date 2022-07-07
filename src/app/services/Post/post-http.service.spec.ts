@@ -1,12 +1,14 @@
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
-import { TestBed } from "@angular/core/testing"
-import { PostService } from "./post.service"
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { PostService } from './post.service';
 
-describe('postService using with HttpClientTestingModule',()=>{
+describe('postService using with HttpClientTestingModule', () => {
+  let postService: PostService;
 
-  let postService : PostService;
-
-  let httpClientTestingController : HttpTestingController;
+  let httpClientTestingController: HttpTestingController;
 
   let POSTS = [
     {
@@ -31,29 +33,43 @@ describe('postService using with HttpClientTestingModule',()=>{
     },
   ];
 
-  beforeEach(()=>{
-
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      providers:[PostService],
-      imports:[HttpClientTestingModule]
-    })
+      providers: [PostService],
+      imports: [HttpClientTestingModule],
+    });
 
-    postService = TestBed.inject(PostService)
+    postService = TestBed.inject(PostService);
     httpClientTestingController = TestBed.inject(HttpTestingController);
-  })
+  });
 
-  describe('getPosts()',()=>{
-    it('should return posts when getPosts() is called',()=>{
-
-      postService.getPosts().subscribe( data =>{
-        console.log(data)
-        expect(data).toEqual(POSTS)
+  describe('getPosts()', () => {
+    it('should return posts when getPosts() is called', () => {
+      postService.getPosts().subscribe((data) => {
+        console.log(data);
+        expect(data).toEqual(POSTS);
       });
-      const request = httpClientTestingController.expectOne('https://jsonplaceholder.typicode.com/posts')
+      const request = httpClientTestingController.expectOne(
+        'https://jsonplaceholder.typicode.com/posts'
+      );
       request.flush(POSTS);
 
-      expect(request.request.method).toBe('GET')
-    })
+      expect(request.request.method).toBe('GET');
+    });
+  });
 
-  })
-})
+  describe('postDetail()', () => {
+    it('should return single post when postDetail is called with postId', () => {
+      postService.postDetail(1).subscribe();
+      // postService.postDetail(2).subscribe(); //normalde hata vermez ama altta tanımladığımız verify metodu bu satırı görünce hata verdirir.
+
+      const request = httpClientTestingController.expectOne(
+        'https://jsonplaceholder.typicode.com/posts/1'
+      );
+
+      expect(request.request.method).toBe('GET');
+
+      httpClientTestingController.verify(); //birden fazla postDetail çağırıldığında aralarından biri doğruysa hata vermez fakat verify metodu bize URL'deki id ile postDetail'e verilen id'lerin kesinlikle uyuşmasını bekler. uyuşmayan varsa hata verir.
+    });
+  });
+});
