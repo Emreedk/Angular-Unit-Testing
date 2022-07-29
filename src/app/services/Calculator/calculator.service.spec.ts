@@ -8,10 +8,10 @@ describe('CalculatorService', () => {
   let loggerServiceSpy: jasmine.SpyObj<LoggerService>;
 
   //Bu scope'taki tüm test case'lerden önce bunu çalıştır.
-  beforeEach(() => {
-    mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']); //Mocking the injected service
 
-    TestBed.configureTestingModule({
+  beforeEach(() => {
+    mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']); // Mocking the LoggerService
+    TestBed.configureTestingModule({   //TestBed ile gerekli importları burada yapıyoruz. ngModule gibi düşünebiliriz.
       providers: [
         CalculatorService,
         {
@@ -22,15 +22,15 @@ describe('CalculatorService', () => {
     });
 
     // console.log('calling before each')
-    // spyOn(mockLoggerServive, 'log');      //we don't need this line because the above action does this
+    // spyOn(mockLoggerServive, 'log');      //alt satır aynı işlevi yapıyor.
     // calculator = new CalculatorService(mockLoggerService); //instance from CalculatorService ( alttaki kodla birlikte testbed kullanmaya başladık.)
 
     calculator = TestBed.inject(CalculatorService);
 
 
-    loggerServiceSpy = TestBed.inject(
-      LoggerService
-    ) as jasmine.SpyObj<LoggerService>; //Yukarıda yaptığımız provide işleminde useValue olarak tanımladığımız mockLoggerService işlemini burada da bu şekilde kullanabiliriz.
+    // loggerServiceSpy = TestBed.inject(
+    //   LoggerService
+    // ) as jasmine.SpyObj<LoggerService>;
   });
 
   it('should add two numbers', () => {
@@ -38,13 +38,12 @@ describe('CalculatorService', () => {
 
     //arrenge
     // ** working on beforeEach method **
-
     //act
     let result = calculator.add(2, 2);
 
     //assert
     expect(result).toBe(4);
-    expect(loggerServiceSpy.log).toHaveBeenCalledTimes(1);
+    expect(mockLoggerService.log).toHaveBeenCalledTimes(1);
   });
 
   it('should subtract two numbers', () => {
@@ -58,6 +57,6 @@ describe('CalculatorService', () => {
 
     // assert
     expect(result).toBe(0);
-    expect(loggerServiceSpy.log).toHaveBeenCalledTimes(1);
+    expect(mockLoggerService.log).toHaveBeenCalledTimes(1);
   });
 });

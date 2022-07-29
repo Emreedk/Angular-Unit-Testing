@@ -148,23 +148,46 @@ describe('Posts Component', () => {
       expect(mockPostService.deletePost).toHaveBeenCalledTimes(1);
     });
 
-    it('should call delete method when post component button is clicked',()=>{
-
-      spyOn(component, 'delete')
+    it('should call delete method when post component button is clicked', () => {
+      spyOn(component, 'delete');
 
       mockPostService.getPosts.and.returnValue(of(POSTS));
       fixture.detectChanges();
 
-      let postComponentDEs = fixture.debugElement.queryAll(By.directive(PostComponent))
+      let postComponentDEs = fixture.debugElement.queryAll(
+        By.directive(PostComponent)
+      );
+
+      for (let i = 0; i < postComponentDEs.length; i++) {
+        postComponentDEs[i]
+          .query(By.css('button'))
+          .triggerEventHandler('click', { preventDefault: () => {} });
+
+        expect(component.delete).toHaveBeenCalledWith(POSTS[i]);
+      }
+    });
+
+    it('should call the delete method when the delete event is emitted in PostComponent', () => {
+
+      spyOn(component, 'delete');
+
+      mockPostService.getPosts.and.returnValue(of(POSTS));
+
+      fixture.detectChanges();
+
+      let postComponentDEs = fixture.debugElement.queryAll(
+        By.directive(PostComponent)
+      );
 
       for (let i = 0; i < postComponentDEs.length; i++) {
 
-        postComponentDEs[i].query(By.css('button')).triggerEventHandler('click',{preventDefault: ()=>{}});
+        (postComponentDEs[i].componentInstance as PostComponent).delete.emit(
+          POSTS[i]
+        );
 
-      expect(component.delete).toHaveBeenCalledWith(POSTS[i])
+        expect(component.delete).toHaveBeenCalledWith(POSTS[i]);
+
       }
-
-
-    })
+    });
   });
 });

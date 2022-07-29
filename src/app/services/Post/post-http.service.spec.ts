@@ -8,7 +8,7 @@ import { PostService } from './post.service';
 describe('postService using with HttpClientTestingModule', () => {
   let postService: PostService;
 
-  let httpClientTestingController: HttpTestingController;
+  let httpClientTestingController: HttpTestingController;  //HttpTestingController, isteklerin mock edilmesine ve verileri isteğe gömmemize izin veren testlere enjekte edilir.
 
   let POSTS = [
     {
@@ -36,11 +36,12 @@ describe('postService using with HttpClientTestingModule', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [PostService],
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule], //Servisleri test ederken gerçek http isteklerini yapmak istemediğimiz için onları mocklamamız gerekir. Gerçek isteklerimizde kullandığımız HttpClientModule’ü HttpClientTestingModule ile mocklayabiliriz.
+
     });
 
     postService = TestBed.inject(PostService);
-    httpClientTestingController = TestBed.inject(HttpTestingController);
+    httpClientTestingController = TestBed.inject(HttpTestingController); //HttpTestingController, isteklerin mock edilmesine ve verileri isteğe gömmemize izin veren testlere enjekte edilir.
   });
 
   describe('getPosts()', () => {
@@ -69,7 +70,7 @@ describe('postService using with HttpClientTestingModule', () => {
 
       expect(request.request.method).toBe('GET');
 
-      httpClientTestingController.verify(); //birden fazla postDetail çağırıldığında aralarından biri doğruysa hata vermez fakat verify metodu bize URL'deki id ile postDetail'e verilen id'lerin kesinlikle uyuşmasını bekler. uyuşmayan varsa hata verir.
+      httpClientTestingController.verify(); //Bekleyen http çağrısı olmadığını doğrulamak için testten sonra .verify() çağrılır.
     });
   });
 });

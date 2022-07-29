@@ -11,7 +11,9 @@ interface Data {
 }
 
 describe('Http Client Testing Module', () => {
+
   let httpClient: HttpClient;
+
   let httpTestingController : HttpTestingController
 
   beforeEach(() => {
@@ -23,6 +25,8 @@ describe('Http Client Testing Module', () => {
     httpTestingController = TestBed.inject(HttpTestingController)
 
   });
+
+
   it('should call the testUrl with get Request', () => {
     const testData : Data = { name: 'Emre Demirkazık'}
 
@@ -30,10 +34,11 @@ describe('Http Client Testing Module', () => {
     httpClient.get<Data>(testUrl).subscribe( data =>{
       // console.log(data)
       expect(data).toEqual(testData)
-    });   //httpClient.get metodunu çağırdık içine testUrl'i verdik
+  });//httpClient.get metodunu çağırdık içine testUrl'i verdik
 
 
-    // httpClient.get<Data>(testUrl).subscribe();   //Bu satır aktif olursa error verir çünkü alt satırda bir kere çağırılmalı dedik.
+    //httpClient.get<Data>(testUrl).subscribe();
+    //Bu satır aktif olursa error verir çünkü alt satırda bir kere çağırılmalı dedik.
 
 
     const request = httpTestingController.expectOne(testUrl)   // httpClient.get metodunun sadece bir kere çağırılmasını test ettik.
@@ -44,7 +49,7 @@ describe('Http Client Testing Module', () => {
   });
 
   it('should test multiple Request', ()=>{
-    const testData  :Data[] =[{name: 'Emre'}, {name: 'Onur'}];
+    const testData  :Data[] =[{name: 'Emre'}, {name: 'Eda'}];
 
     httpClient.get<Data[]>(testUrl).subscribe(data =>{
       expect(data.length).toEqual(0)
@@ -57,7 +62,7 @@ describe('Http Client Testing Module', () => {
     httpClient.get<Data[]>(testUrl).subscribe(data =>{
       expect(data).toEqual(testData)
     });
-
+debugger;
     const request = httpTestingController.match(testUrl);
 
     expect(request.length).toEqual(3)

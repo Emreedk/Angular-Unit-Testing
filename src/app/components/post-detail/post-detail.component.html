@@ -1,0 +1,17 @@
+<h1>POST DETAILS</h1>
+
+<div *ngIf="post">
+  <h2>Title : {{ post.title }}</h2>
+  <div>Body : {{ post.body }}</div>
+  <hr />
+  <div>
+    <label for="">Title: <input type="text" size="150" [(ngModel)]="post.title" /></label>
+    <hr />
+    <label for="">Body: <input type="text" size="150" [(ngModel)]="post.body" /></label>
+  </div>
+<hr>
+  <div>
+    <button (click)="goBack()">go Back</button>&nbsp;&nbsp;
+    <button (click)="save()">Save</button>
+    </div>
+</div>

@@ -39,7 +39,7 @@ describe('Post Component', () => {
     };
     comp.post = post;  //component propertylere ekleme ya da değişiklik yaptığımızda bunu belirtmemiz gerekir. Bunun için fixture.detectChanges kullanırız. Aksi takdirde html elementleri atanan değişiklikleri bilmez ve null değer alır.
 
-    fixture.detectChanges();  // değişiklik olmadığından emin olmak için.
+    fixture.detectChanges();  // bu komut sayesinde değişiklikleri takip ettik ve bildirdik.
 
     const postDebugElement : DebugElement = fixture.debugElement;   // html elementlerine erişime olanak sağlandı.
 

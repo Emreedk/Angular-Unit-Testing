@@ -28,10 +28,13 @@ describe('Post Service', () => {
       title: 'title 4',
     },
   ];
+
   beforeEach(() => {
     let httpClientSpyObj = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+    console.log(httpClientSpyObj)
 
-    TestBed.configureTestingModule({
+
+    TestBed.configureTestingModule({   //TestBed, Angular test araçlarının en önemlisidir. TestBed, Angular @NgModule'ü taklit eden dinamik olarak oluşturulmuş bir Angular test modülü oluşturur. TestBed.configureTestingModule() yöntemi, @NgModule özelliklerinin çoğuna sahip olabilen bir meta veri nesnesi alır.
       providers: [
         PostService,
         {
@@ -40,6 +43,8 @@ describe('Post Service', () => {
         },
       ],
     });
+
+    //!! Hem test edilecek servisi hem de spy obje bağımlılığını inject ettik. ↓
     postService = TestBed.inject(PostService);  //testbed.inject ile PostService'den instance oluşturduk
     httpClientSpy = TestBed.inject(HttpClient) as jasmine.SpyObj<HttpClient>;
   });
@@ -47,6 +52,7 @@ describe('Post Service', () => {
   describe('getPosts()', () => {
     it('should return expected posts when getPosts() is called', (done : DoneFn) => {
       httpClientSpy.get.and.returnValue(of(POSTS));
+
       postService.getPosts().subscribe({
         next: (posts) => {
           expect(posts).toEqual(POSTS);

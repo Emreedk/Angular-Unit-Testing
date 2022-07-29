@@ -3,20 +3,18 @@
 describe('First Test', ()=>{
   let testVariable : any;
 
-  beforeEach(()=>{
-    testVariable = {};
-  })
+
 
 //First Test should return true if  a is true
   it('should return true if a is true', ()=>{
     //arrenge
-    testVariable.a = false;
+    testVariable = {}  //tanımlama yapıldı
 
     //act
-    testVariable.a = true;
+    testVariable.a = true;  // test edilecek kod çalıştırıldı
 
     //assert
-    expect(testVariable.a).toBe(true)
+    expect(testVariable.a).toBe(true)  //test sonuçları doğrulandı mı?
   })
 })
 
